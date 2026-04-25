@@ -187,8 +187,7 @@ discovered TEXT
                 technique TEXT,
                 description TEXT,
                 success_score INTEGER,
-                last_used TEXT,
-                FOREIGN KEY (target_id) REFERENCES targets(id)
+                last_used TEXT
             )
         """)
         
@@ -201,7 +200,7 @@ discovered TEXT
                 cvss REAL,
                 published TEXT,
                 affected TEXT,
-                references TEXT,
+                refs TEXT,
                 updated TEXT
             )
         """)
