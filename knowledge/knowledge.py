@@ -17,14 +17,24 @@ class KnowledgeBase:
         if db_path is None:
             db_path = os.path.expanduser("~/.secaios/knowledge.db")
         
+        # Expand the path
+        db_path = os.path.expanduser(db_path)
+        
+        # Create directory
+        db_dir = os.path.dirname(db_path)
+        if db_dir:
+            os.makedirs(db_dir, exist_ok=True)
+        
         self.db_path = db_path
-        os.makedirs(os.path.dirname(db_path), exist_ok=True)
         self.conn = sqlite3.connect(db_path)
         self._init_db()
     
     def _init_db(self):
         """Initialize database schema"""
         cursor = self.conn.cursor()
+        
+        # Enable foreign keys
+        cursor.execute("PRAGMA foreign_keys = ON")
         
         # Target history
         cursor.execute("""
@@ -56,6 +66,8 @@ class KnowledgeBase:
             )
         """)
         
+        cursor.execute("PRAGMA foreign_keys = OFF")
+        
         # Services found
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS services (
@@ -66,8 +78,90 @@ class KnowledgeBase:
                 service TEXT,
                 version TEXT,
                 state TEXT,
-                discovered TEXT,
-                FOREIGN KEY (target_id) REFERENCES targets(id)
+discovered TEXT
+            )
+        """)
+        
+        # Services found
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS services (
+                id INTEGER PRIMARY KEY,
+                target_id INTEGER,
+                host TEXT,
+                port INTEGER,
+                service TEXT,
+                version TEXT,
+                state TEXT,
+                discovered TEXT
+            )
+        """)
+        
+        # Credentials found
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS credentials (
+                id INTEGER PRIMARY KEY,
+                target_id INTEGER,
+                username TEXT,
+                password TEXT,
+                hash TEXT,
+                type TEXT,
+                source TEXT
+            )
+        """)
+        
+        # Successful techniques
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS techniques (
+                id INTEGER PRIMARY KEY,
+                target_id INTEGER,
+                technique TEXT,
+                description TEXT,
+                success_score INTEGER,
+                last_used TEXT
+            )
+        """)
+        
+        # CVE cache
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS cve_cache (
+                cve_id TEXT PRIMARY KEY,
+                description TEXT,
+                severity TEXT,
+                cvss REAL,
+                published TEXT,
+                affected TEXT,
+                refs TEXT,
+                updated TEXT
+            )
+        """)
+        
+        # Target state (for resume)
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS pentest_state (
+                target_id INTEGER PRIMARY KEY,
+                phase TEXT,
+                data TEXT,
+                updated TEXT
+            )
+        """)
+        
+        # Tool definitions
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS tools (
+                id INTEGER PRIMARY KEY,
+                name TEXT UNIQUE,
+                definition TEXT,
+                created TEXT
+            )
+        """)
+        
+        # Notes / context
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS notes (
+                id INTEGER PRIMARY KEY,
+                target_id INTEGER,
+                content TEXT,
+                created TEXT
             )
         """)
         
