@@ -472,7 +472,13 @@ This penetration test identified {critical + high} critical and high severity vu
         
         report += f"""
 ## Methodology
-{', '.join([state.get('phase', 'N/A') for p in ['recon', 'enumeration', 'vuln_analysis', 'exploitation', 'post_exploitation', 'attack_chaining']] if state.get('phase') == p or p in str(state)])}
+1. Reconnaissance
+2. Enumeration
+3. Vulnerability Analysis
+4. Exploitation
+5. Post-Exploitation
+6. Attack Chaining
+7. Reporting
 
 ## Recommendations
 1. Patch critical vulnerabilities immediately
