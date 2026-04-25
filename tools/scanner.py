@@ -225,10 +225,10 @@ def run_wpscan(target: str, scan_type: str = "enumeration") -> dict:
 # ========================================
 
 def run_nuclei(target: str, severity: str = "critical,high,medium",
-             new-templates: bool = False) -> dict:
+              new_templates: bool = False) -> dict:
     """Run Nuclei vulnerability scanner"""
     # Update templates if requested
-    if new-templates:
+    if new_templates:
         subprocess.run(["nuclei", "-ut"], capture_output=True)
     
     cmd = ["nuclei", "-u", target, 
