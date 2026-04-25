@@ -1,0 +1,48 @@
+# SecAIOS configuration
+version: "1.0.0"
+name: "SecAIOS"
+
+# Paths
+knowledge_db: "~/.secaios/knowledge.db"
+workspace: "~/.secaios/workspace"
+
+# Execution
+autonomy: 3
+parallel_tasks: 5
+timeout: 300
+
+# Tool settings
+nuclei:
+  severity: "critical,high,medium"
+  templates_update: true
+
+nmap:
+  default_args: "-sV -sC"
+  timing: "T4"
+
+# Tool paths (if not in PATH)
+tools:
+  amass: "amass"
+  nmap: "nmap"
+  nuclei: "nuclei"
+  nikto: "nikto"
+  sqlmap: "sqlmap"
+  whatweb: "whatweb"
+
+# Notifications
+ notify:
+  critical: true
+  complete: false
+
+# Logging
+log_level: "info"
+log_file: "~/.secaios/logs/secaios.log"
+
+# Features
+features:
+  infinite_context: true
+  persistent_memory: true
+  parallel_execution: true
+  attack_chaining: true
+  continuous_monitoring: false
+  defensive_mapping: true
